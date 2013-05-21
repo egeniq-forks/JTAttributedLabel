@@ -52,6 +52,9 @@
     // Fix black layout if UILabel.backgroundColor is specified
     self.layer.backgroundColor = self.backgroundColor.CGColor;
     self.layer.opaque = NO;
+
+    JTTextLayer *textLayer = (JTTextLayer *)self.layer;
+    textLayer.wrapped = (self.numberOfLines != 1);
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText {
@@ -59,6 +62,8 @@
 
     JTTextLayer *textLayer = (JTTextLayer *)self.layer;
     textLayer.string = _attributedText;
+
+    textLayer.wrapped = (self.numberOfLines != 1);
 }
 
 - (void)drawTextInRect:(CGRect)rect {
@@ -122,11 +127,20 @@
     [super setString:_string];
 }
 
+
+- (CGSize)preferredFrameSize {
+    if (self.wrapped != 1) {
+        return self.bounds.size;
+    } else {
+        return [super preferredFrameSize];
+    }
+}
+
 - (void)drawInContext:(CGContextRef)ctx {
     // Transform the context to draw text at vertical center
     CGFloat padding = roundf((self.frame.size.height - self.preferredFrameSize.height)/2);
     CGContextSaveGState(ctx);
-    CGContextTranslateCTM(ctx, 0, padding);
+    CGContextTranslateCTM(ctx, 0, padding > 0 ? padding : 0);
     [super drawInContext:ctx];
     CGContextRestoreGState(ctx);
 }
