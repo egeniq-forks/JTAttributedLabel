@@ -29,6 +29,7 @@
                                    } else if ([key isEqualToString:@"NSFont"]) {
                                        CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)[obj fontName], [obj pointSize], NULL);
                                        [normalized addAttribute:(NSString *)kCTFontAttributeName value:(__bridge id)font range:range];
+                                       CFRelease(font);
                                    } else if ([key isEqualToString:@"NSUnderline"]) {
                                        [normalized addAttribute:(NSString *)kCTUnderlineStyleAttributeName value:obj range:range];
                                    } else if ([key isEqualToString:@"NSBackgroundColor"]) {
